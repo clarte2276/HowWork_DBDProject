@@ -1,6 +1,6 @@
 const express = require('express');
 const connectDB = require('./db/connection');
-const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -14,8 +14,8 @@ connectDB();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Task 라우터 사용
-app.use('/api/tasks', taskRoutes);
+// 라우터 연결
+app.use('/api/auth', authRoutes);
 
 // 서버 실행
 app.listen(PORT, () => {

@@ -9,6 +9,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import AddTask from "./pages/AddTask";
 import TaskList from "./pages/TaskList";
 import MyPage from "./pages/MyPage";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute 추가
 
 function App() {
   return (
@@ -20,8 +23,9 @@ function App() {
           path="/"
           element={
             <div className="main-container">
-                <div class="arrow up"></div>
-                <div class="arrow right"></div>
+              <div className="arrow up"></div>
+              <div className="arrow right"></div>
+
               {/* Header Section with Buttons */}
               <div className="header">
                 <Link to="/add-task">
@@ -52,10 +56,19 @@ function App() {
           }
         />
 
-        {/* 다른 페이지 */}
+        {/* 페이지 라우트 */}
         <Route path="/add-task" element={<AddTask />} />
         <Route path="/task-list" element={<TaskList />} />
-        <Route path="/my-page" element={<MyPage />} />
+        <Route
+          path="/my-page"
+          element={
+            <PrivateRoute>
+              <MyPage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </Router>
