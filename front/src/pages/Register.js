@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Register() {
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,18 +16,52 @@ function Register() {
     try {
       await axios.post('http://localhost:5000/api/auth/register', formData);
       alert('회원가입 성공!');
+      navigate('/'); // 메인 페이지로 이동
     } catch (err) {
-      alert('회원가입 실패: ' + err.response.data.error);
+      alert('회원가입 실패: ' + (err.response?.data?.error || err.message));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="name" placeholder="이름" value={formData.name} onChange={handleChange} required />
-      <input type="email" name="email" placeholder="이메일" value={formData.email} onChange={handleChange} required />
-      <input type="password" name="password" placeholder="비밀번호" value={formData.password} onChange={handleChange} required />
-      <button type="submit">회원가입</button>
-    </form>
+    <div className="register-container">
+      <h2>회원가입</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">이름:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">이메일:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">비밀번호:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit" className="register-button">회원가입</button>
+      </form>
+    </div>
   );
 }
 

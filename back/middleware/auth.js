@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded; // 디코딩된 정보 (userId) 저장
+    req.user = decoded; // userId를 req.user에 저장
     next();
   } catch (err) {
     res.status(401).json({ error: '유효하지 않은 토큰입니다.' });
