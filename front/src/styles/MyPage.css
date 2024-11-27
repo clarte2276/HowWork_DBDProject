@@ -1,0 +1,51 @@
+.my-page-container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .my-page-container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .logout-button,
+  .main-page-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button {
+    background-color: #d9534f;
+    color: white;
+  }
+  
+  .logout-button:hover {
+    background-color: #c9302c;
+  }
+  
+  .main-page-button {
+    background-color: #5bc0de;
+    color: white;
+  }
+  
+  .main-page-button:hover {
+    background-color: #31b0d5;
+  }
+  

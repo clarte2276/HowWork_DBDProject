@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 // react-icons에서 필요한 아이콘 가져오기
-import { FaPlus, FaList, FaUserCircle } from "react-icons/fa";
+import { FaPlus, FaList } from "react-icons/fa";
 
 // React Router import
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -11,7 +11,8 @@ import TaskList from "./pages/TaskList";
 import MyPage from "./pages/MyPage";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute 추가
+import PrivateRoute from "./components/PrivateRoute";
+import MyPageButton from "./components/MyPageButton"; // MyPageButton import 추가
 
 function App() {
   return (
@@ -38,11 +39,7 @@ function App() {
                     <FaList size={20} />
                   </button>
                 </Link>
-                <Link to="/my-page">
-                  <button className="header-button">
-                    <FaUserCircle size={20} />
-                  </button>
-                </Link>
+                <MyPageButton />
               </div>
 
               {/* Quadrant Layout */}
