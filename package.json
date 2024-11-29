@@ -1,0 +1,5 @@
+{
+"scripts": {
+  "start": "concurrently \"cd front && npm start\" \"cd back && node server.js\""
+}
+}
