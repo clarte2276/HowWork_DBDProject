@@ -1,4 +1,4 @@
-// index.js
+// server.js
 
 const express = require('express');
 const mysql = require('mysql2');
@@ -17,7 +17,7 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'xendpep0097!@',
+  password: process.env.DB_PASS || 'xendpep0097!@', // 환경 변수 사용 또는 기본 값
   database: 'howwork'
 });
 
@@ -32,18 +32,30 @@ db.connect(err => {
 // 회원가입 API
 app.post('/register', (req, res) => {
   const { user_id, password, username } = req.body;
-  
-  bcrypt.hash(password, 10, (err, hash) => {
+
+  // 중복 사용자 확인
+  const checkUserQuery = `SELECT * FROM users WHERE user_id = ?`;
+  db.query(checkUserQuery, [user_id], (err, results) => {
     if (err) {
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+    if (results.length > 0) {
+      return res.status(409).json({ error: 'User ID already exists' }); // 409: Conflict
     }
 
-    const query = `INSERT INTO users (user_id, password, username) VALUES (?, ?, ?)`;
-    db.query(query, [user_id, hash, username], (err, result) => {
+    // 비밀번호 해싱 및 회원가입 처리
+    bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
-        return res.status(500).json({ error: 'Error in registering user' });
+        return res.status(500).json({ error: 'Internal server error' });
       }
-      res.status(201).json({ message: 'User registered successfully' });
+
+      const insertQuery = `INSERT INTO users (user_id, password, username) VALUES (?, ?, ?)`;
+      db.query(insertQuery, [user_id, hash, username], (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: 'Error in registering user' });
+        }
+        res.status(201).json({ message: 'User registered successfully' });
+      });
     });
   });
 });

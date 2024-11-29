@@ -1,3 +1,4 @@
+// RegisterPage.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -16,9 +17,14 @@ function RegisterPage() {
       await axios.post('http://localhost:5000/register', formData);
       alert('Registration successful!');
     } catch (error) {
-      alert('Registration failed!');
+      if (error.response) {
+        alert(`Registration failed: ${error.response.data.error}`);
+      } else {
+        alert('Registration failed: An unknown error occurred.');
+      }
     }
   };
+  
 
   return (
     <div>

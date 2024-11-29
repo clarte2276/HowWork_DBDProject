@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 function TaskCreatePage() {
@@ -12,6 +13,16 @@ function TaskCreatePage() {
     description: ''
   });
 
+  const navigate = useNavigate();
+
+  // 로그인 상태 확인 및 페이지 접근 제어
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login'); // 로그인 상태가 아니라면 로그인 페이지로 이동
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTask((prevTask) => ({
@@ -22,9 +33,18 @@ function TaskCreatePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5000/tasks', task)
+    const token = localStorage.getItem('token'); // JWT 토큰을 가져옴
+
+    // 요청 헤더에 토큰 추가
+    axios.post('http://localhost:5000/tasks', task, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((response) => {
         console.log('Task Created:', response.data);
+        // 생성 후 다른 페이지로 이동
+        navigate('/tasks');
       })
       .catch((error) => {
         console.error('There was an error creating the task!', error);
