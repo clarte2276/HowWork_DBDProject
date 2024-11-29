@@ -1,21 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
-import TaskCreatePage from './pages/TaskCreatePage';
-import TaskListPage from './pages/TaskListPage';
+import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
 import MyPage from './pages/MyPage';
 
 function App() {
   return (
     <Router>
-      <div>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/create-task" element={<TaskCreatePage />} />
-          <Route path="/tasks" element={<TaskListPage />} />
-          <Route path="/my-page" element={<MyPage />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/my-page" element={<MyPage />} />
+      </Routes>
     </Router>
   );
 }
