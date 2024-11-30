@@ -1,5 +1,3 @@
-//server.js
-
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -112,6 +110,25 @@ app.post('/login', (req, res) => {
       const token = jwt.sign({ user_id: results[0].user_id }, 'secret_key', { expiresIn: '1h' });
       res.json({ message: 'Login successful', token });
     });
+  });
+});
+
+// 유저 정보 조회 API (보호된 라우트)
+app.get('/users/me', authenticateToken, (req, res) => {
+  const user_id = req.user.user_id;
+
+  const query = `SELECT username FROM users WHERE user_id = ?`;
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching user information:', err);
+      return res.status(500).json({ error: 'Error fetching user information' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ username: results[0].username });
   });
 });
 
