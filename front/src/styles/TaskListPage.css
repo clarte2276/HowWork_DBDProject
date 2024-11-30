@@ -1,0 +1,33 @@
+.task-list-container {
+    padding: 20px;
+  }
+  
+  .task-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .task-list-table th, .task-list-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .task-list-table th {
+    cursor: pointer;
+    background-color: #f4f4f4;
+  }
+  
+  .task-list-table th:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .task-list-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .task-list-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
