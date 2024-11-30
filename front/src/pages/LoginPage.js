@@ -1,7 +1,9 @@
+// LoginPage.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import '../styles/LoginPage.css'; // LoginPage 스타일을 import
 
 function LoginPage() {
   const [formData, setFormData] = useState({ user_id: '', password: '' });
@@ -27,13 +29,15 @@ function LoginPage() {
   return (
     <div>
       <Header />
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="user_id" placeholder="User ID" onChange={handleChange} required /><br />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required /><br />
-        <button type="submit">Login</button>
-      </form>
-      <button onClick={() => navigate('/register')}>Go to Register Page</button>
+      <div className="login-container">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h1>Login</h1>
+          <input type="text" name="user_id" placeholder="User ID" onChange={handleChange} required /><br />
+          <input type="password" name="password" placeholder="Password" onChange={handleChange} required /><br />
+          <button type="submit">Login</button>
+          <button className="register-link" onClick={() => navigate('/register')}>Go to Register Page</button>
+        </form>
+      </div>
     </div>
   );
 }

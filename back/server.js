@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -12,6 +10,17 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// 모든 요청에 대해 로그를 남기는 미들웨어
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+
+  res.on('finish', () => {
+    console.log(`Response: ${res.statusCode} ${res.statusMessage} - ${new Date().toISOString()}`);
+  });
+
+  next();
+});
 
 // MySQL 연결 설정
 const db = mysql.createConnection({
@@ -28,6 +37,26 @@ db.connect(err => {
     console.log('Connected to MySQL database');
   }
 });
+
+// 인증 미들웨어
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == null) {
+    console.error('No token provided');
+    return res.sendStatus(401); // 토큰이 없으면 접근 금지
+  }
+
+  jwt.verify(token, 'secret_key', (err, user) => {
+    if (err) {
+      console.error('Invalid token:', err);
+      return res.sendStatus(403); // 유효하지 않은 토큰이면 접근 금지
+    }
+    req.user = user; // 사용자 정보를 요청 객체에 저장
+    next();
+  });
+};
 
 // 회원가입 API
 app.post('/register', (req, res) => {
@@ -78,9 +107,50 @@ app.post('/login', (req, res) => {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      const token = jwt.sign({ id: results[0].id }, 'secret_key', { expiresIn: '1h' });
+      const token = jwt.sign({ user_id: results[0].user_id }, 'secret_key', { expiresIn: '1h' });
       res.json({ message: 'Login successful', token });
     });
+  });
+});
+
+// Task 생성 API (보호된 라우트)
+app.post('/tasks', authenticateToken, (req, res) => {
+  const { taskName, startDate, dueDate, importance, urgency, description } = req.body;
+  const user_id = req.user.user_id; // JWT 토큰에서 가져온 사용자 ID
+
+  console.log('Task data received:', {
+    user_id,
+    taskName,
+    startDate,
+    dueDate,
+    importance,
+    urgency,
+    description
+  });
+
+  const insertQuery = `INSERT INTO tasks (user_id, task_name, start_date, due_date, importance, urgency, description) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  db.query(insertQuery, [user_id, taskName, startDate, dueDate, importance, urgency, description], (err, result) => {
+    if (err) {
+      console.error('Error in creating task:', err);
+      return res.status(500).json({ error: 'Error in creating task' });
+    }
+    res.status(201).json({ message: 'Task created successfully' });
+  });
+});
+
+// Task 목록 조회 API (보호된 라우트)
+app.get('/tasks', authenticateToken, (req, res) => {
+  const user_id = req.user.user_id; // JWT 토큰에서 가져온 사용자 ID
+
+  const query = `SELECT * FROM tasks WHERE user_id = ?`;
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching tasks:', err);
+      return res.status(500).json({ error: 'Error fetching tasks' });
+    }
+
+    console.log('Tasks fetched for user:', user_id, results);
+    res.status(200).json(results);
   });
 });
 

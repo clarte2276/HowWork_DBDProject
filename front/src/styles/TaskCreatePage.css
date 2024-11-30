@@ -1,0 +1,67 @@
+/* TaskCreatePage.css */
+
+.task-create-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px); /* Header 높이를 뺀 부분 */
+    background-color: #f7f8fa;
+    padding: 20px;
+  }
+  
+  .task-create-form {
+    background-color: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .task-create-form h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .task-create-form input[type="text"],
+  .task-create-form input[type="date"],
+  .task-create-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .task-create-form input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .task-create-form textarea {
+    height: 100px;
+  }
+  
+  .task-create-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #2f8dee;
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .task-create-form button[type="submit"]:hover {
+    background-color: #226bb8;
+  }
+  
