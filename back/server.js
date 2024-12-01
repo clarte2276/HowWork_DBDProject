@@ -20,7 +20,7 @@ let refreshTokens = [];
 app.use(cors());
 app.use(express.json());
 
-// 모든 요청에 대해 로그를 남기는 미들웨어
+// Middleware to log all requests
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
 
@@ -31,11 +31,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// MySQL 연결 설정
+// MySQL connection setup
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: process.env.DB_PASS || 'xendpep0097!@', // 환경 변수 사용 또는 기본 값
+  password: process.env.DB_PASS || 'xendpep0097!@', // Use environment variable or default
   database: 'howwork'
 });
 
@@ -47,31 +47,31 @@ db.connect(err => {
   }
 });
 
-// 인증 미들웨어
+// Authentication middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (token == null) {
     console.error('No token provided');
-    return res.sendStatus(401); // 토큰이 없으면 접근 금지
+    return res.sendStatus(401); // No token, unauthorized
   }
 
   jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => { // Use ACCESS_TOKEN_SECRET
     if (err) {
       console.error('Invalid token:', err);
-      return res.sendStatus(403); // 유효하지 않은 토큰이면 접근 금지
+      return res.sendStatus(403); // Invalid token, forbidden
     }
-    req.user = user; // 사용자 정보를 요청 객체에 저장
+    req.user = user; // Store user info in request
     next();
   });
 };
 
-// 회원가입 API
+// Registration API
 app.post('/register', (req, res) => {
   const { user_id, password, username } = req.body;
 
-  // 중복 사용자 확인
+  // Check for duplicate user
   const checkUserQuery = `SELECT * FROM users WHERE user_id = ?`;
   db.query(checkUserQuery, [user_id], (err, results) => {
     if (err) {
@@ -82,7 +82,7 @@ app.post('/register', (req, res) => {
       return res.status(409).json({ error: 'User ID already exists' }); // 409: Conflict
     }
 
-    // 비밀번호 해싱 및 회원가입 처리
+    // Hash password and register user
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
         console.error('Error hashing password:', err);
@@ -101,7 +101,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-// 로그인 API
+// Login API
 app.post('/login', (req, res) => {
   const { user_id, password } = req.body;
 
@@ -162,7 +162,7 @@ app.post('/token', (req, res) => {
   });
 });
 
-// 로그아웃 API
+// Logout API
 app.post('/logout', (req, res) => {
   const { refreshToken } = req.body;
 
@@ -175,7 +175,7 @@ app.post('/logout', (req, res) => {
   res.status(204).send(); // No Content
 });
 
-// 유저 정보 조회 API (보호된 라우트)
+// Get User Info API (Protected Route)
 app.get('/users/me', authenticateToken, (req, res) => {
   const user_id = req.user.user_id;
 
@@ -194,7 +194,7 @@ app.get('/users/me', authenticateToken, (req, res) => {
   });
 });
 
-// Task 생성 API (보호된 라우트)
+// Create Task API (Protected Route)
 app.post('/tasks', authenticateToken, (req, res) => {
   const { task_name, start_date, due_date, importance, urgency, description } = req.body;
   const user_id = req.user.user_id;
@@ -210,15 +210,15 @@ app.post('/tasks', authenticateToken, (req, res) => {
   });
 
   // Validate required fields
-  if (!task_name || !start_date || !due_date || !importance || !urgency) {
+  if (!task_name || !start_date || !due_date || importance == null || urgency == null) {
     console.error('Missing required task fields');
     return res.status(400).json({ error: 'Missing required task fields' });
   }
 
-  // Validate importance and urgency
-  if (importance < 1 || importance > 10 || urgency < 1 || urgency > 10) {
-    console.error('Importance and Urgency must be between 1 and 10');
-    return res.status(400).json({ error: 'Importance and Urgency must be between 1 and 10' });
+  // Validate importance and urgency (0-10)
+  if (importance < 0 || importance > 10 || urgency < 0 || urgency > 10) {
+    console.error('Importance and Urgency must be between 0 and 10');
+    return res.status(400).json({ error: 'Importance and Urgency must be between 0 and 10' });
   }
 
   // Validate dates
@@ -243,11 +243,11 @@ app.post('/tasks', authenticateToken, (req, res) => {
       console.error('Error in creating task:', err);
       return res.status(500).json({ error: 'Error in creating task' });
     }
-    res.status(201).json({ message: 'Task created successfully' });
+    res.status(201).json({ message: 'Task created successfully', task_id: result.insertId });
   });
 });
 
-// Task 목록 조회 API (보호된 라우트)
+// Get Tasks API (Protected Route)
 app.get('/tasks', authenticateToken, (req, res) => {
   const user_id = req.user.user_id;
 
@@ -263,13 +263,13 @@ app.get('/tasks', authenticateToken, (req, res) => {
   });
 });
 
-// Task 수정 API (보호된 라우트)
+// Update Task API (Protected Route)
 app.put('/tasks/:task_id', authenticateToken, (req, res) => {
   const { task_id } = req.params;
   const { task_name, start_date, due_date, importance, urgency, description } = req.body;
   const user_id = req.user.user_id;
 
-  // 먼저, 해당 task가 존재하는지 확인하고 user_id가 일치하는지 검증
+  // Check if the task exists and belongs to the user
   const checkTaskQuery = `SELECT * FROM tasks WHERE task_id = ? AND user_id = ?`;
   db.query(checkTaskQuery, [task_id, user_id], (err, results) => {
     if (err) {
@@ -278,12 +278,37 @@ app.put('/tasks/:task_id', authenticateToken, (req, res) => {
     }
 
     if (results.length === 0) {
-      // 해당 task가 없거나 user_id가 일치하지 않는 경우
+      // Task does not exist or does not belong to the user
       console.warn(`Task with id ${task_id} not found or access denied for user ${user_id}`);
       return res.status(404).json({ error: 'Task not found or access denied' });
     }
 
-    // Task 업데이트 쿼리 실행
+    // Validate required fields
+    if (!task_name || !start_date || !due_date || importance == null || urgency == null) {
+      console.error('Missing required task fields');
+      return res.status(400).json({ error: 'Missing required task fields' });
+    }
+
+    // Validate importance and urgency (0-10)
+    if (importance < 0 || importance > 10 || urgency < 0 || urgency > 10) {
+      console.error('Importance and Urgency must be between 0 and 10');
+      return res.status(400).json({ error: 'Importance and Urgency must be between 0 and 10' });
+    }
+
+    // Validate dates
+    const startDate = new Date(start_date);
+    const dueDate = new Date(due_date);
+    if (isNaN(startDate) || isNaN(dueDate)) {
+      console.error('Invalid date format');
+      return res.status(400).json({ error: 'Invalid date format' });
+    }
+
+    if (startDate > dueDate) {
+      console.error('Start date cannot be after due date');
+      return res.status(400).json({ error: 'Start date cannot be after due date' });
+    }
+
+    // Update task in the database
     const updateQuery = `
       UPDATE tasks
       SET task_name = ?, start_date = ?, due_date = ?, importance = ?, urgency = ?, description = ?
@@ -295,12 +320,29 @@ app.put('/tasks/:task_id', authenticateToken, (req, res) => {
         return res.status(500).json({ error: 'Error updating task' });
       }
 
-      res.status(200).json({ message: 'Task updated successfully' });
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Task not found or no changes made' });
+      }
+
+      // Fetch the updated task to return
+      const fetchUpdatedTaskQuery = `SELECT * FROM tasks WHERE task_id = ? AND user_id = ?`;
+      db.query(fetchUpdatedTaskQuery, [task_id, user_id], (err, updatedResults) => {
+        if (err) {
+          console.error('Error fetching updated task:', err);
+          return res.status(500).json({ error: 'Error fetching updated task' });
+        }
+
+        if (updatedResults.length === 0) {
+          return res.status(404).json({ error: 'Task not found after update' });
+        }
+
+        res.status(200).json({ message: 'Task updated successfully', task: updatedResults[0] });
+      });
     });
   });
 });
 
-// Task 삭제 API (보호된 라우트)
+// Delete Task API (Protected Route)
 app.delete('/tasks/:task_id', authenticateToken, (req, res) => {
   const { task_id } = req.params;
   const user_id = req.user.user_id;
@@ -318,7 +360,7 @@ app.delete('/tasks/:task_id', authenticateToken, (req, res) => {
   });
 });
 
-// 서버 실행
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -1,6 +1,5 @@
-/* src/styles/TaskDetailModal.css */
+/* src/styles/TaskEditModal.css */
 
-/* Reuse the same modal styles as in MainPage.css */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -28,65 +27,59 @@
     text-align: center;
   }
   
-  .task-detail-table {
+  .modal-content form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .modal-content form input[type="text"],
+  .modal-content form input[type="date"],
+  .modal-content form input[type="range"],
+  .modal-content form textarea {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .task-detail-table td {
-    border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
   
-  .task-detail-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .task-detail-table tr:hover {
-    background-color: #f1f1f1;
+  .modal-content form textarea {
+    resize: vertical;
+    height: 80px;
   }
   
   .modal-buttons {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 20px;
   }
   
-  .edit-button,
-  .delete-button,
-  .close-button {
-    padding: 8px 16px;
+  .save-button {
+    background-color: #4caf50; /* Green */
+    color: white;
     border: none;
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    color: white;
   }
   
-  .edit-button {
-    background-color: #4caf50; /* Green */
-  }
-  
-  .edit-button:hover {
+  .save-button:hover {
     background-color: #45a049;
   }
   
-  .delete-button {
+  .cancel-button {
     background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
   }
   
-  .delete-button:hover {
+  .cancel-button:hover {
     background-color: #da190b;
-  }
-  
-  .close-button {
-    background-color: #555555; /* Grey */
-  }
-  
-  .close-button:hover {
-    background-color: #333333;
   }
   
   /* Responsive Design */
@@ -95,13 +88,15 @@
       padding: 15px 20px;
     }
   
-    .task-detail-table td {
+    .modal-content form input[type="text"],
+    .modal-content form input[type="date"],
+    .modal-content form input[type="range"],
+    .modal-content form textarea {
       padding: 6px;
     }
   
-    .edit-button,
-    .delete-button,
-    .close-button {
+    .save-button,
+    .cancel-button {
       padding: 6px 12px;
       font-size: 0.9em;
     }
