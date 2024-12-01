@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import '../styles/MyPage.css'; // 스타일 import
+import '../styles/Form.css'; // Import Form.css for consistent styling
 
 function MyPage() {
   const [username, setUsername] = useState('');
@@ -66,11 +66,10 @@ function MyPage() {
   };
 
   return (
-    <div>
-      <Header />
-
+    <div> 
+    <Header />
     <div className="mypage-container">
-      
+    
       <div className="mypage-content">
         <h1>My Page</h1>
         <p className="welcome-message">
