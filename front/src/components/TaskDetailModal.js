@@ -1,7 +1,7 @@
 // src/components/TaskDetailModal.js
 
 import React from 'react';
-import '../styles/TaskDetailModal.css'; // Import modal styles
+import '../styles/Form.css'; // Form.css 파일 import
 
 function TaskDetailModal({ task, onClose, onEdit, onDelete }) {
   if (!task) return null;
@@ -20,8 +20,8 @@ function TaskDetailModal({ task, onClose, onEdit, onDelete }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>Task Details</h2>
+      <div className="form-container modal-content">
+        <h2 className="form-title">Task Details</h2>
         <table className="task-detail-table">
           <tbody>
             <tr>
@@ -51,9 +51,9 @@ function TaskDetailModal({ task, onClose, onEdit, onDelete }) {
           </tbody>
         </table>
         <div className="modal-buttons">
-          <button className="edit-button" onClick={handleEdit}>Edit</button>
-          <button className="delete-button" onClick={handleDelete}>Delete</button>
-          <button className="close-button" onClick={handleClose}>Close</button>
+          <button className="form-button edit-button" onClick={handleEdit}>Edit</button>
+          <button className="form-button delete-button" onClick={handleDelete}>Delete</button>
+          <button className="form-secondary-button" onClick={handleClose}>Close</button>
         </div>
       </div>
     </div>

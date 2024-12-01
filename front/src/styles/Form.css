@@ -10,6 +10,7 @@
     max-width: 400px; /* 필요에 따라 조정 가능 */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     margin: 0 auto; /* 중앙 정렬 */
+    box-sizing: border-box;
 }
 
 /* 공통 폼 제목 스타일 */
@@ -130,17 +131,160 @@
     background-color: #da190b;
 }
 
+/* 헤더 컨테이너 스타일 */
+.header-container {
+    width: 100%;
+    background-color: #2f8dee; /* 헤더 배경색 (필요에 따라 조정) */
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 헤더 내부의 내용 중앙 정렬 */
+.header-container .header {
+    max-width: 1200px; /* 사이트의 최대 너비에 맞게 조정 */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 모달 오버레이 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 모달 콘텐츠 스타일 */
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease;
+    box-sizing: border-box;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* 태스크 디테일 테이블 스타일 */
+.task-detail-table,
+.task-edit-form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.task-detail-table td,
+.task-edit-form td {
+    border: 1px solid #dddfe2;
+    padding: 8px;
+    text-align: left;
+}
+
+.task-detail-table tr:nth-child(even),
+.task-edit-form tr:nth-child(even) {
+    background-color: #f9f9fa;
+}
+
+.task-detail-table tr:hover,
+.task-edit-form tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 모달 버튼 컨테이너 스타일 */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Edit 버튼을 위한 추가 스타일 */
+.edit-button {
+    background-color: #4caf50; /* 녹색 */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+/* Delete 버튼을 위한 추가 스타일 */
+.delete-button {
+    background-color: #f44336; /* 빨간색 */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: #da190b;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .form-container {
+    .form-container,
+    .modal-content {
         padding: 20px;
         max-width: 100%;
     }
 
     .form-button,
     .form-cancel-button,
-    .form-secondary-button {
+    .form-secondary-button,
+    .edit-button,
+    .delete-button {
         padding: 8px 16px;
         font-size: 0.9em;
     }
+
+    .form-input,
+    .form-textarea,
+    .form-range {
+        padding: 8px;
+    }
+}
+
+/* 추가적인 스타일 예시 */
+
+/* 입력 필드 포커스 스타일 */
+.form-input:focus,
+.form-textarea:focus,
+.form-range:focus {
+    border-color: #2f8dee;
+    box-shadow: 0 0 5px rgba(47, 141, 238, 0.5);
+    outline: none;
+}
+
+/* 에러 메시지 스타일 */
+.form-error {
+    color: #f44336;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
 }

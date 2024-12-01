@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Form.css'; // Form.css 파일 import
 import Header from '../components/Header';
-import '../styles/RegisterPage.css'; // 스타일 파일 import
 
 function RegisterPage() {
   const [formData, setFormData] = useState({ user_id: '', password: '', username: '' });
@@ -39,55 +39,63 @@ function RegisterPage() {
 
   return (
     <div>
-      <Header />
+      {/* 헤더를 별도의 div로 감쌈 */}
+      <div className="header-container">
+        <Header />
+      </div>
 
-    <div className="register-container">
-      
-      <h2>회원가입</h2>
-      <form className="register-form" onSubmit={handleSubmit}>
-        <label>
-          사용자 ID:
-          <input
-            type="text"
-            name="user_id"
-            value={formData.user_id}
-            onChange={handleChange}
-            placeholder="User ID"
-            required
-          />
-        </label>
-        <label>
-          사용자 이름:
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Username"
-            required
-          />
-        </label>
-        <label>
-          비밀번호:
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
-        </label>
-        <button type="submit">회원가입</button>
-        <button
-          type="button"
-          className="login-link"
-          onClick={handleLoginRedirect}
-        >
-          로그인 페이지로 이동
-        </button>
-      </form>
-    </div>
+      {/* Form.css의 form-container 클래스 적용 */}
+      <div className="form-container">
+        <h2 className="form-title">회원가입</h2>
+        <form className="form" onSubmit={handleSubmit}>
+          <label className="form-label">
+            사용자 ID:
+            <input
+              type="text"
+              name="user_id"
+              className="form-input"
+              value={formData.user_id}
+              onChange={handleChange}
+              placeholder="User ID"
+              required
+            />
+          </label>
+          <label className="form-label">
+            사용자 이름:
+            <input
+              type="text"
+              name="username"
+              className="form-input"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Username"
+              required
+            />
+          </label>
+          <label className="form-label">
+            비밀번호:
+            <input
+              type="password"
+              name="password"
+              className="form-input"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
+          </label>
+          <button type="submit" className="form-button">
+            회원가입
+          </button>
+          <button
+            type="button"
+            className="form-secondary-button"
+            onClick={handleLoginRedirect}
+          >
+            로그인 페이지로 이동
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

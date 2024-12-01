@@ -1,7 +1,7 @@
 // src/components/TaskEditModal.js
 
 import React, { useState } from 'react';
-import '../styles/TaskEditModal.css'; // Import modal styles
+import '../styles/Form.css'; // Form.css 파일 import
 
 function TaskEditModal({ task, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -29,48 +29,52 @@ function TaskEditModal({ task, onClose, onSave }) {
   };
 
   return (
-    <div className="task-edit-container">
-      <div className="task-edit-form">
-        <h2>Edit Task</h2>
+    <div className="modal-overlay">
+      <div className="form-container modal-content">
+        <h2 className="form-title">Edit Task</h2>
         <form onSubmit={handleSubmit}>
-          <label>
+          <label className="form-label">
             Task Name:
             <input
               type="text"
               name="task_name"
+              className="form-input"
               value={formData.task_name}
               onChange={handleChange}
               placeholder="Task Name"
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Start Date:
             <input
               type="date"
               name="start_date"
+              className="form-input"
               value={formData.start_date}
               onChange={handleChange}
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Due Date:
             <input
               type="date"
               name="due_date"
+              className="form-input"
               value={formData.due_date}
               onChange={handleChange}
               required
             />
           </label>
-          <label htmlFor="importance">
+          <label className="form-label" htmlFor="importance">
             Importance: {formData.importance}
           </label>
           <input
             type="range"
             id="importance"
             name="importance"
+            className="form-range"
             min="0"
             max="10"
             step="1"
@@ -78,14 +82,14 @@ function TaskEditModal({ task, onClose, onSave }) {
             onChange={handleChange}
             required
           />
-          <br />
-          <label htmlFor="urgency">
+          <label className="form-label" htmlFor="urgency">
             Urgency: {formData.urgency}
           </label>
           <input
             type="range"
             id="urgency"
             name="urgency"
+            className="form-range"
             min="0"
             max="10"
             step="1"
@@ -93,19 +97,19 @@ function TaskEditModal({ task, onClose, onSave }) {
             onChange={handleChange}
             required
           />
-          <br />
-          <label>
+          <label className="form-label">
             Description:
             <textarea
               name="description"
+              className="form-textarea"
               value={formData.description}
               onChange={handleChange}
               placeholder="Description"
             ></textarea>
           </label>
           <div className="modal-buttons">
-            <button type="submit" className="save-button">Save</button>
-            <button type="button" className="cancel-button" onClick={onClose}>Cancel</button>
+            <button type="submit" className="form-button">Save</button>
+            <button type="button" className="form-secondary-button" onClick={onClose}>Cancel</button>
           </div>
         </form>
       </div>
