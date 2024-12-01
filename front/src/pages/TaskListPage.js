@@ -173,24 +173,24 @@ function TaskListPage() {
     <div>
       <Header />
       <div className="task-list-container">
-        <h1>Task List</h1>
+        <h1>전체 일정 표</h1>
         <table className="task-list-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('task_name')}>Task Name</th>
-              <th onClick={() => handleSort('start_date')}>Start Date</th>
-              <th onClick={() => handleSort('due_date')}>Due Date</th>
-              <th onClick={() => handleSort('importance')}>Importance</th>
-              <th onClick={() => handleSort('urgency')}>Urgency</th>
-              <th>Description</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th onClick={() => handleSort('task_name')}>일정 이름</th>
+              <th onClick={() => handleSort('start_date')}>시작 날짜</th>
+              <th onClick={() => handleSort('due_date')}>종료 날짜</th>
+              <th onClick={() => handleSort('importance')}>중요도</th>
+              <th onClick={() => handleSort('urgency')}>시급도</th>
+              <th>상세 정보</th>
+              <th>편집</th>
+              <th>삭제</th>
             </tr>
           </thead>
           <tbody>
             {tasks.length === 0 ? (
               <tr>
-                <td colSpan="8">No tasks available.</td>
+                <td colSpan="8">일정이 없습니다.</td>
               </tr>
             ) : (
               tasks.map((task) => (
@@ -206,7 +206,7 @@ function TaskListPage() {
                       className="form-button edit-button"
                       onClick={() => openEditModal(task)}
                     >
-                      Edit
+                      수정
                     </button>
                   </td>
                   <td>
@@ -214,7 +214,7 @@ function TaskListPage() {
                       className="form-button delete-button"
                       onClick={() => openDeleteConfirm(task)}
                     >
-                      Delete
+                      삭제
                     </button>
                   </td>
                 </tr>

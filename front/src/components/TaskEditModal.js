@@ -34,7 +34,7 @@ function TaskEditModal({ task, onClose, onSave }) {
         <h2 className="form-title">Edit Task</h2>
         <form onSubmit={handleSubmit}>
           <label className="form-label">
-            Task Name:
+            일정 이름 : 
             <input
               type="text"
               name="task_name"
@@ -46,7 +46,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             />
           </label>
           <label className="form-label">
-            Start Date:
+            시작 날짜 : 
             <input
               type="date"
               name="start_date"
@@ -57,7 +57,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             />
           </label>
           <label className="form-label">
-            Due Date:
+            종료 날짜 : 
             <input
               type="date"
               name="due_date"
@@ -68,7 +68,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             />
           </label>
           <label className="form-label" htmlFor="importance">
-            Importance: {formData.importance}
+            중요도 : {formData.importance}
           </label>
           <input
             type="range"
@@ -83,7 +83,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             required
           />
           <label className="form-label" htmlFor="urgency">
-            Urgency: {formData.urgency}
+            시급도 : {formData.urgency}
           </label>
           <input
             type="range"
@@ -98,7 +98,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             required
           />
           <label className="form-label">
-            Description:
+            상세 정보 : 
             <textarea
               name="description"
               className="form-textarea"

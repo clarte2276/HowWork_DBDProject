@@ -75,11 +75,11 @@ function TaskCreatePage() {
       <Header />
       <div className="task-create-container">
         <form className="task-create-form" onSubmit={handleSubmit}>
-          <h1>Create Task</h1>
+          <h1>일정 만들기</h1>
           <input
             type="text"
             name="taskName"
-            placeholder="Task Name"
+            placeholder="일정 이름"
             value={task.taskName}
             onChange={handleChange}
             required
@@ -99,7 +99,7 @@ function TaskCreatePage() {
             required
           /><br />
 
-          <label htmlFor="importance">Importance: {task.importance}</label>
+          <label htmlFor="importance">중요도: {task.importance}</label>
           <input
             type="range"
             id="importance"
@@ -110,7 +110,7 @@ function TaskCreatePage() {
             onChange={handleChange}
           /><br />
 
-          <label htmlFor="urgency">Urgency: {task.urgency}</label>
+          <label htmlFor="urgency">시급도: {task.urgency}</label>
           <input
             type="range"
             id="urgency"
@@ -123,11 +123,11 @@ function TaskCreatePage() {
 
           <textarea
             name="description"
-            placeholder="Description"
+            placeholder="일정 상세 설명"
             value={task.description}
             onChange={handleChange}
           ></textarea><br />
-          <button type="submit">Create Task</button>
+          <button type="submit">만들기</button>
         </form>
       </div>
     </div>

@@ -71,19 +71,19 @@ function MyPage() {
     <div className="mypage-container">
     
       <div className="mypage-content">
-        <h1>My Page</h1>
+        <h1>마이 페이지</h1>
         <p className="welcome-message">
           {username ? `${username}님 안녕하세요!` : 'Loading user information...'}
         </p>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
-        <h2>Upcoming Tasks (7 days or less)</h2>
+        <h2>가까운 일정 (7일 이내)</h2>
         {upcomingTasks.length === 0 ? (
-          <p>No tasks due in the next 7 days.</p>
+          <p>7일 이내에 일정이 없습니다.</p>
         ) : (
           <ul className="tasks-list">
             {upcomingTasks.map((task) => (
               <li key={task.task_id} className="task-item">
-                {task.task_name} - Due: {new Date(task.due_date).toLocaleDateString()}
+                {task.task_name} - 기한 : {new Date(task.due_date).toLocaleDateString()}
               </li>
             ))}
           </ul>
