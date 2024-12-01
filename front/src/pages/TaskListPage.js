@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import TaskEditModal from '../components/TaskEditModal';
 import TaskDeleteConfirmModal from '../components/TaskDeleteConfirmModal';
-import '../styles/Form.css'; // Import Form.css for consistent styling
-import '../styles/TaskListPage.css'; // Import styles
+import '../styles/Form.css';
+import '../styles/TaskListPage.css';
 
 function TaskListPage() {
   const [tasks, setTasks] = useState([]);
@@ -24,7 +24,7 @@ function TaskListPage() {
     const fetchTasks = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login'); // 로그인 상태가 아니라면 로그인 페이지로 이동
+        navigate('/login');
       } else {
         try {
           const response = await axios.get('http://localhost:5000/tasks', {
@@ -67,6 +67,16 @@ function TaskListPage() {
     setTasks(sortedTasks);
     setSortConfig({ key, direction });
   };
+
+  // 정렬 아이콘을 렌더링하는 함수 추가
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return ''; // 정렬 중이지 않은 경우 아이콘 표시 안 함
+    }
+    return sortConfig.direction === 'asc' ? '▲' : '▼';
+  };
+
+  // 이하 코드 동일...
 
   // 열기 함수: Edit Modal
   const openEditModal = (task) => {
@@ -111,7 +121,6 @@ function TaskListPage() {
       );
 
       if (response.status === 200) {
-        // 업데이트된 작업을 상태에 반영
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             task.task_id === currentTask.task_id
@@ -146,7 +155,6 @@ function TaskListPage() {
       );
 
       if (response.status === 200) {
-        // 삭제된 작업을 상태에서 제거
         setTasks((prevTasks) =>
           prevTasks.filter((task) => task.task_id !== taskToDelete.task_id)
         );
@@ -159,7 +167,7 @@ function TaskListPage() {
     }
   };
 
-  // Helper function to validate and format dates
+  // 날짜 형식 변환 함수
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     if (isNaN(date)) {
@@ -177,11 +185,22 @@ function TaskListPage() {
         <table className="task-list-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('task_name')}>일정 이름</th>
-              <th onClick={() => handleSort('start_date')}>시작 날짜</th>
-              <th onClick={() => handleSort('due_date')}>종료 날짜</th>
-              <th onClick={() => handleSort('importance')}>중요도</th>
-              <th onClick={() => handleSort('urgency')}>시급도</th>
+              {/* 수정된 부분: 정렬 아이콘 추가 */}
+              <th onClick={() => handleSort('task_name')}>
+                일정 이름 {getSortIcon('task_name')}
+              </th>
+              <th onClick={() => handleSort('start_date')}>
+                시작 날짜 {getSortIcon('start_date')}
+              </th>
+              <th onClick={() => handleSort('due_date')}>
+                종료 날짜 {getSortIcon('due_date')}
+              </th>
+              <th onClick={() => handleSort('importance')}>
+                중요도 {getSortIcon('importance')}
+              </th>
+              <th onClick={() => handleSort('urgency')}>
+                시급도 {getSortIcon('urgency')}
+              </th>
               <th>상세 정보</th>
               <th>편집</th>
               <th>삭제</th>
