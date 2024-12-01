@@ -1,104 +1,149 @@
 /* src/styles/TaskEditModal.css */
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.task-edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* LoginPage.css와 동일하게 설정 */
+  background-color: rgba(247, 248, 250, 0.9); /* LoginPage의 배경색과 유사 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.task-edit-form {
+  background-color: #ffffff;
+  border: 1px solid #dddfe2;
+  border-radius: 8px;
+  padding: 30px;
+  width: 100%;
+  max-width: 400px; /* LoginPage.css와 동일 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.task-edit-form h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.task-edit-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.task-edit-form input[type="text"],
+.task-edit-form input[type="date"],
+.task-edit-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #dddfe2;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.task-edit-form input[type="range"] {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.task-edit-form textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-button {
+  background-color: #2f8dee; /* LoginPage.css와 동일한 버튼 색상 */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #226bb8;
+}
+
+.cancel-button {
+  background-color: #f44336; /* 빨간색 취소 버튼 */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #da190b;
+}
+
+/* 슬라이더 스타일링 */
+.task-edit-form input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+}
+
+.task-edit-form input[type="range"]:hover {
+  opacity: 1;
+}
+
+.task-edit-form input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2f8dee;
+  cursor: pointer;
+}
+
+.task-edit-form input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2f8dee;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .task-edit-form {
+    padding: 20px;
   }
-  
-  .modal-content {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  
-  .modal-content h2 {
-    margin-top: 0;
-    text-align: center;
-  }
-  
-  .modal-content form label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-  
-  .modal-content form input[type="text"],
-  .modal-content form input[type="date"],
-  .modal-content form input[type="range"],
-  .modal-content form textarea {
-    width: 100%;
+
+  .task-edit-form input[type="text"],
+  .task-edit-form input[type="date"],
+  .task-edit-form textarea {
     padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
   }
-  
-  .modal-content form textarea {
-    resize: vertical;
-    height: 80px;
-  }
-  
-  .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-  
-  .save-button {
-    background-color: #4caf50; /* Green */
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .save-button:hover {
-    background-color: #45a049;
-  }
-  
+
+  .save-button,
   .cancel-button {
-    background-color: #f44336; /* Red */
-    color: white;
-    border: none;
     padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
+    font-size: 0.9em;
   }
-  
-  .cancel-button:hover {
-    background-color: #da190b;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .modal-content {
-      padding: 15px 20px;
-    }
-  
-    .modal-content form input[type="text"],
-    .modal-content form input[type="date"],
-    .modal-content form input[type="range"],
-    .modal-content form textarea {
-      padding: 6px;
-    }
-  
-    .save-button,
-    .cancel-button {
-      padding: 6px 12px;
-      font-size: 0.9em;
-    }
-  }
-  
+}

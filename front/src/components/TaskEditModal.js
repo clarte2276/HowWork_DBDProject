@@ -15,9 +15,11 @@ function TaskEditModal({ task, onClose, onSave }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // 중요도와 긴급도는 정수로 변환
+    const newValue = (name === 'importance' || name === 'urgency') ? parseInt(value, 10) : value;
     setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 
@@ -27,8 +29,8 @@ function TaskEditModal({ task, onClose, onSave }) {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="task-edit-container">
+      <div className="task-edit-form">
         <h2>Edit Task</h2>
         <form onSubmit={handleSubmit}>
           <label>
@@ -38,6 +40,7 @@ function TaskEditModal({ task, onClose, onSave }) {
               name="task_name"
               value={formData.task_name}
               onChange={handleChange}
+              placeholder="Task Name"
               required
             />
           </label>
@@ -70,7 +73,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             name="importance"
             min="0"
             max="10"
-            step="0.5"
+            step="1"
             value={formData.importance}
             onChange={handleChange}
             required
@@ -85,7 +88,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             name="urgency"
             min="0"
             max="10"
-            step="0.5"
+            step="1"
             value={formData.urgency}
             onChange={handleChange}
             required
@@ -97,6 +100,7 @@ function TaskEditModal({ task, onClose, onSave }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              placeholder="Description"
             ></textarea>
           </label>
           <div className="modal-buttons">

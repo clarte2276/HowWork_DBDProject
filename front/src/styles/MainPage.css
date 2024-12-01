@@ -70,7 +70,7 @@
 
 .importance-label {
   left: -25px; /* Adjusted for better spacing */
-  bottom: 40%;
+  bottom: 45%;
   transform: rotate(-90deg) translateY(-50%);
   transform-origin: left center;
 }

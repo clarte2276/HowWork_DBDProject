@@ -1,0 +1,78 @@
+/* src/styles/RegisterPage.css */
+
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f7f8fa;
+    padding: 20px;
+  }
+  
+  .register-form {
+    background-color: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .register-form h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .register-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .register-form input[type="text"],
+  .register-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .register-form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745; /* 녹색 버튼 */
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .register-form button[type="submit"]:hover {
+    background-color: #218838;
+  }
+  
+  .register-form .login-link {
+    background-color: transparent;
+    border: none;
+    color: #2f8dee;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  .register-form .login-link:hover {
+    color: #226bb8;
+  }
+  

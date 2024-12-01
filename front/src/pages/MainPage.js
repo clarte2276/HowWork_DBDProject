@@ -194,21 +194,12 @@ function MainPage() {
     return date.toLocaleDateString();
   };
 
-  // Handle change for range sliders (if needed)
-  const handleRangeChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentTask((prevTask) => ({
-      ...prevTask,
-      [name]: value,
-    }));
-  };
-
   return (
     <div>
       <Header />
       <div className="matrix-container">
-        <div className="axis-label importance-label">중요도 (Importance)</div>
-        <div className="axis-label urgency-label">긴급도 (Urgency)</div>
+        <div className="axis-label importance-label">중요도</div>
+        <div className="axis-label urgency-label">긴급도</div>
         <div className="matrix-grid">
           {tasks.map((task) => (
             <button
@@ -216,8 +207,8 @@ function MainPage() {
               className="task-button"
               data-urgency={task.calc_urgency} // Add data attribute for styling if needed
               style={{
-                left: `${(task.calc_urgency / 10) * 100}%`, // 0-10 maps to 0%-100%
-                bottom: `${(task.importance / 10) * 100}%`, // 0-10 maps to 0%-100%
+                left: `${(task.calc_urgency / 10) * 95}%`, // 0-10 maps to 0%-100%
+                bottom: `${(task.importance / 10) * 95}%`, // 0-10 maps to 0%-100%
               }}
               onClick={() => openTaskDetailModal(task)}
               title={`Importance: ${task.importance}, Urgency: ${task.calc_urgency}`}

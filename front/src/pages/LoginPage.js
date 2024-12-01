@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LoginPage.css'; // 스타일 파일 import
+import Header from '../components/Header';
 
 function LoginPage() {
   const [userId, setUserId] = useState('');
@@ -35,10 +36,16 @@ function LoginPage() {
     }
   };
 
+  const handleRegisterRedirect = () => {
+    navigate('/register'); // 회원가입 페이지로 이동
+  };
+
   return (
+    <div>
+    <Header />
     <div className="login-container">
       <h2>로그인</h2>
-      <form className="login-form" onSubmit={handleLogin}> {/* className 추가 */}
+      <form className="login-form" onSubmit={handleLogin}>
         <label>
           사용자 ID:
           <input
@@ -58,7 +65,15 @@ function LoginPage() {
           />
         </label>
         <button type="submit">로그인</button>
+        <button
+          type="button"
+          className="register-link"
+          onClick={handleRegisterRedirect}
+        >
+          회원가입
+        </button>
       </form>
+    </div>
     </div>
   );
 }

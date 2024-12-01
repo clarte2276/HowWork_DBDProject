@@ -1,3 +1,5 @@
+// src/pages/MyPage.js
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -65,8 +67,10 @@ function MyPage() {
 
   return (
     <div>
-    <Header /> {/* 헤더를 최상단으로 이동 */}
+      <Header />
+
     <div className="mypage-container">
+      
       <div className="mypage-content">
         <h1>My Page</h1>
         <p className="welcome-message">
@@ -86,8 +90,8 @@ function MyPage() {
           </ul>
         )}
       </div>
+      </div>
     </div>
-  </div>
   );
 }
 
