@@ -37,7 +37,24 @@
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+/* Dynamic background color based on calc_urgency */
+.task-button[data-urgency="1"] {
+  background-color: #ffcccc; /* Light Red */
+}
+
+.task-button[data-urgency="5"] {
+  background-color: #ff4d4f; /* Medium Red */
+}
+
+.task-button[data-urgency="6.5"] {
+  background-color: #ff1a1a; /* Darker Red */
+}
+
+.task-button[data-urgency="10"] {
+  background-color: #cc0000; /* Darkest Red */
 }
 
 .task-button:hover {
@@ -52,8 +69,8 @@
 }
 
 .importance-label {
-  left: -130px; /* Adjusted for better spacing */
-  bottom: 50%;
+  left: -25px; /* Adjusted for better spacing */
+  bottom: 40%;
   transform: rotate(-90deg) translateY(-50%);
   transform-origin: left center;
 }

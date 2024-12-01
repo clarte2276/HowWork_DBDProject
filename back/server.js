@@ -1,4 +1,4 @@
-//server.js
+// server.js
 
 const express = require('express');
 const mysql = require('mysql2');
@@ -9,6 +9,13 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Use environment variables for secrets
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'default_access_secret';
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'default_refresh_secret';
+
+// In-memory store for refresh tokens (Consider using a database or Redis for production)
+let refreshTokens = [];
 
 app.use(cors());
 app.use(express.json());
@@ -50,7 +57,7 @@ const authenticateToken = (req, res, next) => {
     return res.sendStatus(401); // 토큰이 없으면 접근 금지
   }
 
-  jwt.verify(token, 'secret_key', (err, user) => {
+  jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => { // Use ACCESS_TOKEN_SECRET
     if (err) {
       console.error('Invalid token:', err);
       return res.sendStatus(403); // 유효하지 않은 토큰이면 접근 금지
@@ -68,6 +75,7 @@ app.post('/register', (req, res) => {
   const checkUserQuery = `SELECT * FROM users WHERE user_id = ?`;
   db.query(checkUserQuery, [user_id], (err, results) => {
     if (err) {
+      console.error('Database query failed:', err);
       return res.status(500).json({ error: 'Database query failed' });
     }
     if (results.length > 0) {
@@ -77,12 +85,14 @@ app.post('/register', (req, res) => {
     // 비밀번호 해싱 및 회원가입 처리
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
+        console.error('Error hashing password:', err);
         return res.status(500).json({ error: 'Internal server error' });
       }
 
       const insertQuery = `INSERT INTO users (user_id, password, username) VALUES (?, ?, ?)`;
       db.query(insertQuery, [user_id, hash, username], (err, result) => {
         if (err) {
+          console.error('Error in registering user:', err);
           return res.status(500).json({ error: 'Error in registering user' });
         }
         res.status(201).json({ message: 'User registered successfully' });
@@ -98,6 +108,7 @@ app.post('/login', (req, res) => {
   const query = `SELECT * FROM users WHERE user_id = ?`;
   db.query(query, [user_id], (err, results) => {
     if (err) {
+      console.error('Database query failed:', err);
       return res.status(500).json({ error: 'Internal server error' });
     }
     if (results.length === 0) {
@@ -105,14 +116,63 @@ app.post('/login', (req, res) => {
     }
 
     bcrypt.compare(password, results[0].password, (err, isMatch) => {
-      if (err || !isMatch) {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      if (!isMatch) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      const token = jwt.sign({ user_id: results[0].user_id }, 'secret_key', { expiresIn: '1h' });
-      res.json({ message: 'Login successful', token });
+      const user = { user_id: results[0].user_id };
+
+      // Generate Access Token
+      const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+      // Generate Refresh Token
+      const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+      refreshTokens.push(refreshToken); // Store refresh token
+
+      res.json({ message: 'Login successful', accessToken, refreshToken });
     });
   });
+});
+
+// Token Refresh API
+app.post('/token', (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (refreshToken == null) {
+    return res.status(401).json({ error: 'Refresh Token Required' });
+  }
+
+  if (!refreshTokens.includes(refreshToken)) {
+    return res.status(403).json({ error: 'Invalid Refresh Token' });
+  }
+
+  jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      console.error('Invalid Refresh Token:', err);
+      return res.status(403).json({ error: 'Invalid Refresh Token' });
+    }
+
+    const newAccessToken = jwt.sign({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+    res.json({ accessToken: newAccessToken });
+  });
+});
+
+// 로그아웃 API
+app.post('/logout', (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (refreshToken == null) {
+    return res.status(400).json({ error: 'Refresh Token Required' });
+  }
+
+  refreshTokens = refreshTokens.filter(token => token !== refreshToken);
+
+  res.status(204).send(); // No Content
 });
 
 // 유저 정보 조회 API (보호된 라우트)
@@ -149,7 +209,35 @@ app.post('/tasks', authenticateToken, (req, res) => {
     description
   });
 
-  const insertQuery = `INSERT INTO tasks (user_id, task_name, start_date, due_date, importance, urgency, description) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  // Validate required fields
+  if (!task_name || !start_date || !due_date || !importance || !urgency) {
+    console.error('Missing required task fields');
+    return res.status(400).json({ error: 'Missing required task fields' });
+  }
+
+  // Validate importance and urgency
+  if (importance < 1 || importance > 10 || urgency < 1 || urgency > 10) {
+    console.error('Importance and Urgency must be between 1 and 10');
+    return res.status(400).json({ error: 'Importance and Urgency must be between 1 and 10' });
+  }
+
+  // Validate dates
+  const startDate = new Date(start_date);
+  const dueDate = new Date(due_date);
+  if (isNaN(startDate) || isNaN(dueDate)) {
+    console.error('Invalid date format');
+    return res.status(400).json({ error: 'Invalid date format' });
+  }
+
+  if (startDate > dueDate) {
+    console.error('Start date cannot be after due date');
+    return res.status(400).json({ error: 'Start date cannot be after due date' });
+  }
+
+  const insertQuery = `
+    INSERT INTO tasks (user_id, task_name, start_date, due_date, importance, urgency, description)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
   db.query(insertQuery, [user_id, task_name, start_date, due_date, importance, urgency, description], (err, result) => {
     if (err) {
       console.error('Error in creating task:', err);
@@ -211,7 +299,6 @@ app.put('/tasks/:task_id', authenticateToken, (req, res) => {
     });
   });
 });
-
 
 // Task 삭제 API (보호된 라우트)
 app.delete('/tasks/:task_id', authenticateToken, (req, res) => {

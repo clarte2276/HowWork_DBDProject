@@ -1,31 +1,44 @@
-// MainPage.js
+// src/pages/MainPage.js
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import TaskDetailModal from '../components/TaskDetailModal';
 import '../styles/MainPage.css'; // Import styles
+import { calculateCalcUrgency } from '../utils/utils'; // Import the utility function
 
 function MainPage() {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .get('http://localhost:5000/tasks', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setTasks(response.data);
-        })
-        .catch((error) => {
+    const fetchTasks = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:5000/tasks', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const tasksWithCalcUrgency = response.data.map(task => ({
+            ...task,
+            calc_urgency: calculateCalcUrgency(task.urgency, task.start_date, task.due_date)
+          }));
+
+          setTasks(tasksWithCalcUrgency);
+        } catch (error) {
           console.error('There was an error fetching the tasks!', error);
-        });
-    }
+        }
+      }
+    };
+
+    fetchTasks();
+
+    // Optional: Refresh every hour to update urgency dynamically
+    const interval = setInterval(fetchTasks, 60 * 60 * 1000);
+    return () => clearInterval(interval); // Clean up on unmount
   }, []);
 
   const handleTaskClick = (task) => {
@@ -34,16 +47,6 @@ function MainPage() {
 
   const handleCloseModal = () => {
     setSelectedTask(null);
-  };
-
-  // Helper function to validate and format dates
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    if (isNaN(date)) {
-      console.error(`Invalid date: ${dateString}`);
-      return '';
-    }
-    return date.toISOString().split('T')[0];
   };
 
   return (
@@ -57,12 +60,13 @@ function MainPage() {
             <button
               key={task.task_id}
               className="task-button"
+              data-urgency={task.calc_urgency} // Add data attribute for styling
               style={{
-                left: `${(((task.urgency - 1) / 9) * 100) * 0.95}%`,
-                bottom: `${(((task.importance - 1) / 9) * 100) * 0.95}%`,
+                left: `${((task.calc_urgency - 1) / 9) * 100}%`,
+                bottom: `${((task.importance - 1) / 9) * 100}%`,
               }}
               onClick={() => handleTaskClick(task)}
-              title={`Importance: ${task.importance}, Urgency: ${task.urgency}`}
+              title={`Importance: ${task.importance}, Urgency: ${task.calc_urgency}`}
             >
               {task.task_name}
             </button>
