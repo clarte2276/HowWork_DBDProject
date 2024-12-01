@@ -53,7 +53,7 @@ function TaskDetailModal({ task, onClose, onEdit, onDelete }) {
         <div className="modal-buttons">
           <button className="form-button edit-button" onClick={handleEdit}>Edit</button>
           <button className="form-button delete-button" onClick={handleDelete}>Delete</button>
-          <button className="form-secondary-button" onClick={handleClose}>Close</button>
+          <button className="modal-close-button" onClick={handleClose}>Close</button>
         </div>
       </div>
     </div>

@@ -4,7 +4,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import '../styles/TaskListPage.css'; // Import TaskListPage styles
+import TaskEditModal from '../components/TaskEditModal';
+import TaskDeleteConfirmModal from '../components/TaskDeleteConfirmModal';
+import '../styles/Form.css'; // Import Form.css for consistent styling
+import '../styles/TaskListPage.css'; // Import styles
 
 function TaskListPage() {
   const [tasks, setTasks] = useState([]);
@@ -89,9 +92,8 @@ function TaskListPage() {
     setIsDeleteConfirmOpen(false);
   };
 
-  // 수정 제출 처리
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
+  // 수정 제출 처리 (TaskEditModal에서 처리)
+  const handleEditSave = async (updatedTaskData) => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert('You are not logged in.');
@@ -99,32 +101,10 @@ function TaskListPage() {
       return;
     }
 
-    // 데이터 수집
-    const updatedTask = {
-      task_name: e.target.task_name.value,
-      start_date: e.target.start_date.value,
-      due_date: e.target.due_date.value,
-      importance: parseInt(e.target.importance.value),
-      urgency: parseFloat(e.target.urgency.value),
-      description: e.target.description.value,
-    };
-
-    // 유효성 검사
-    if (
-      !updatedTask.task_name ||
-      !updatedTask.start_date ||
-      !updatedTask.due_date ||
-      isNaN(updatedTask.importance) ||
-      isNaN(updatedTask.urgency)
-    ) {
-      alert('Please fill in all required fields.');
-      return;
-    }
-
     try {
       const response = await axios.put(
         `http://localhost:5000/tasks/${currentTask.task_id}`,
-        updatedTask,
+        updatedTaskData,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -135,7 +115,7 @@ function TaskListPage() {
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             task.task_id === currentTask.task_id
-              ? { ...task, ...updatedTask }
+              ? { ...task, ...updatedTaskData }
               : task
           )
         );
@@ -148,8 +128,8 @@ function TaskListPage() {
     }
   };
 
-  // 삭제 처리
-  const handleDelete = async () => {
+  // 삭제 처리 (TaskDeleteConfirmModal에서 처리)
+  const handleDeleteConfirm = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert('You are not logged in.');
@@ -189,15 +169,6 @@ function TaskListPage() {
     return date.toLocaleDateString();
   };
 
-  // Handle change for range sliders (Optional: To display current value)
-  const handleRangeChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentTask((prevTask) => ({
-      ...prevTask,
-      [name]: value,
-    }));
-  };
-
   return (
     <div>
       <Header />
@@ -232,7 +203,7 @@ function TaskListPage() {
                   <td>{task.description}</td>
                   <td>
                     <button
-                      className="edit-button"
+                      className="form-button edit-button"
                       onClick={() => openEditModal(task)}
                     >
                       Edit
@@ -240,7 +211,7 @@ function TaskListPage() {
                   </td>
                   <td>
                     <button
-                      className="delete-button"
+                      className="form-button delete-button"
                       onClick={() => openDeleteConfirm(task)}
                     >
                       Delete
@@ -255,113 +226,20 @@ function TaskListPage() {
 
       {/* Edit Modal */}
       {isEditModalOpen && currentTask && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Edit Task</h2>
-            <form onSubmit={handleEditSubmit}>
-              <label>
-                Task Name:
-                <input
-                  type="text"
-                  name="task_name"
-                  defaultValue={currentTask.task_name}
-                  required
-                />
-              </label>
-              <label>
-                Start Date:
-                <input
-                  type="date"
-                  name="start_date"
-                  defaultValue={currentTask.start_date.slice(0, 10)} // Ensure YYYY-MM-DD format
-                  required
-                />
-              </label>
-              <label>
-                Due Date:
-                <input
-                  type="date"
-                  name="due_date"
-                  defaultValue={currentTask.due_date.slice(0, 10)} // Ensure YYYY-MM-DD format
-                  required
-                />
-              </label>
-              <label htmlFor="importance">
-                Importance: {currentTask.importance}
-              </label>
-              <input
-                type="range"
-                id="importance"
-                name="importance"
-                min="0"
-                max="10"
-                step="0.5"
-                value={currentTask.importance}
-                onChange={handleRangeChange}
-                required
-              />
-              <br />
-              <label htmlFor="urgency">
-                Urgency: {currentTask.urgency}
-              </label>
-              <input
-                type="range"
-                id="urgency"
-                name="urgency"
-                min="0"
-                max="10"
-                step="0.5"
-                value={currentTask.urgency}
-                onChange={handleRangeChange}
-                required
-              />
-              <br />
-              <label>
-                Description:
-                <textarea
-                  name="description"
-                  defaultValue={currentTask.description}
-                ></textarea>
-              </label>
-              <div className="modal-buttons">
-                <button type="submit" className="save-button">
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={closeEditModal}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <TaskEditModal
+          task={currentTask}
+          onClose={closeEditModal}
+          onSave={handleEditSave}
+        />
       )}
 
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && taskToDelete && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Confirm Deletion</h2>
-            <p>
-              Are you sure you want to delete the task "
-              <strong>{taskToDelete.task_name}</strong>"?
-            </p>
-            <div className="modal-buttons">
-              <button className="confirm-button" onClick={handleDelete}>
-                Yes
-              </button>
-              <button
-                className="cancel-button"
-                onClick={closeDeleteConfirm}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
+        <TaskDeleteConfirmModal
+          task={taskToDelete}
+          onClose={closeDeleteConfirm}
+          onConfirm={handleDeleteConfirm}
+        />
       )}
     </div>
   );
