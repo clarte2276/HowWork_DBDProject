@@ -62,8 +62,8 @@ function MainPage() {
               className="task-button"
               data-urgency={task.calc_urgency} // Add data attribute for styling
               style={{
-                left: `${((task.calc_urgency - 1) / 9) * 100}%`,
-                bottom: `${((task.importance - 1) / 9) * 100}%`,
+                left: `${(((task.calc_urgency - 1) / 9) * 100) * 0.95}%`,
+                bottom: `${(((task.importance - 1) / 9) * 100) *0.95}%`,
               }}
               onClick={() => handleTaskClick(task)}
               title={`Importance: ${task.importance}, Urgency: ${task.calc_urgency}`}
