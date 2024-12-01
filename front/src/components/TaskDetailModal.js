@@ -1,3 +1,5 @@
+//TaskDetailModal.js
+
 import React from 'react';
 import '../styles/TaskDetailModal.css'; // 모달 스타일 import
 
@@ -16,15 +18,15 @@ function TaskDetailModal({ task, onClose }) {
           <tbody>
             <tr>
               <td>일정 이름:</td>
-              <td>{task.taskName || ''}</td>
+              <td>{task.task_name || ''}</td>
             </tr>
             <tr>
               <td>시작 날짜:</td>
-              <td>{task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : ''}</td>
+              <td>{task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}</td>
             </tr>
             <tr>
               <td>종료 날짜:</td>
-              <td>{task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}</td>
+              <td>{task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : ''}</td>
             </tr>
             <tr>
               <td>중요도:</td>
