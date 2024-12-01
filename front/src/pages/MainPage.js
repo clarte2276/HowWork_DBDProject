@@ -1,10 +1,10 @@
-//MainPage.js
+// MainPage.js
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import TaskDetailModal from '../components/TaskDetailModal';
-import '../styles/MainPage.css'; // 스타일 import
+import '../styles/MainPage.css'; // Import styles
 
 function MainPage() {
   const [tasks, setTasks] = useState([]);
@@ -13,11 +13,12 @@ function MainPage() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.get('http://localhost:5000/tasks', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      axios
+        .get('http://localhost:5000/tasks', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           setTasks(response.data);
         })
@@ -35,6 +36,16 @@ function MainPage() {
     setSelectedTask(null);
   };
 
+  // Helper function to validate and format dates
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date)) {
+      console.error(`Invalid date: ${dateString}`);
+      return '';
+    }
+    return date.toISOString().split('T')[0];
+  };
+
   return (
     <div>
       <Header />
@@ -47,10 +58,11 @@ function MainPage() {
               key={task.task_id}
               className="task-button"
               style={{
-                left: `${(task.urgency / 10) * 90}%`,
-                bottom: `${(task.importance / 10) * 90}%`
+                left: `${(((task.urgency - 1) / 9) * 100) * 0.95}%`,
+                bottom: `${(((task.importance - 1) / 9) * 100) * 0.95}%`,
               }}
               onClick={() => handleTaskClick(task)}
+              title={`Importance: ${task.importance}, Urgency: ${task.urgency}`}
             >
               {task.task_name}
             </button>
