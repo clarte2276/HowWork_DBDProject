@@ -110,7 +110,7 @@ function TaskCreatePage() {
             onChange={handleChange}
           /><br />
 
-          <label htmlFor="urgency">시급도: {task.urgency}</label>
+          <label htmlFor="urgency">긴급도: {task.urgency}</label>
           <input
             type="range"
             id="urgency"

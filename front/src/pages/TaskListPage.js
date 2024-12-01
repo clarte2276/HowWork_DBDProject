@@ -199,7 +199,7 @@ function TaskListPage() {
                 중요도 {getSortIcon('importance')}
               </th>
               <th onClick={() => handleSort('urgency')}>
-                시급도 {getSortIcon('urgency')}
+                긴급도 {getSortIcon('urgency')}
               </th>
               <th>상세 정보</th>
               <th>편집</th>

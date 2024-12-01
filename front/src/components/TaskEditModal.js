@@ -83,7 +83,7 @@ function TaskEditModal({ task, onClose, onSave }) {
             required
           />
           <label className="form-label" htmlFor="urgency">
-            시급도 : {formData.urgency}
+            긴급도 : {formData.urgency}
           </label>
           <input
             type="range"
